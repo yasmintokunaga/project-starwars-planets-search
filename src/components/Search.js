@@ -6,7 +6,7 @@ function Search() {
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [valueFilter, setValueFilter] = useState(0);
   const planets = useContext(PlanetContext);
-  const { allPlanets, setListPlanets } = planets;
+  const { allPlanets, listPlanets, setListPlanets } = planets;
 
   function handleChange({ target }) {
     const { value } = target;
@@ -40,15 +40,15 @@ function Search() {
     switch (comparisonFilter) {
     case 'maior que':
       return setListPlanets(
-        allPlanets.filter((planet) => parseInt(planet[columnFilter], 10) > valueFilter),
+        listPlanets.filter((planet) => parseInt(planet[columnFilter], 10) > valueFilter),
       );
     case 'menor que':
       return setListPlanets(
-        allPlanets.filter((planet) => parseInt(planet[columnFilter], 10) < valueFilter),
+        listPlanets.filter((planet) => parseInt(planet[columnFilter], 10) < valueFilter),
       );
     case 'igual a':
       return setListPlanets(
-        allPlanets.filter((planet) => planet[columnFilter] === valueFilter),
+        listPlanets.filter((planet) => planet[columnFilter] === valueFilter),
       );
     default:
       break;
