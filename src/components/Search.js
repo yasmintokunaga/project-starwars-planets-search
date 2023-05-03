@@ -12,6 +12,9 @@ function Search() {
     setListPlanets,
     numberFilter,
     setNumberFilter,
+    usedFilter,
+    setUsedFilter,
+    allNumberFilter,
   } = planets;
 
   function handleChange({ target }) {
@@ -41,25 +44,40 @@ function Search() {
     }
   }
 
+  function filterList(list, comparison, column, value) {
+    switch (comparison) {
+    case 'maior que':
+      return list.filter((planet) => parseInt(planet[column], 10) > value);
+    case 'menor que':
+      return list.filter((planet) => parseInt(planet[column], 10) < value);
+    case 'igual a':
+      return list.filter((planet) => planet[column] === value);
+    default:
+      return list;
+    }
+  }
+
   function handleClick(event) {
     event.preventDefault();
     setNumberFilter(numberFilter.filter((filter) => filter !== columnFilter));
-    switch (comparisonFilter) {
-    case 'maior que':
-      return setListPlanets(
-        listPlanets.filter((planet) => parseInt(planet[columnFilter], 10) > valueFilter),
-      );
-    case 'menor que':
-      return setListPlanets(
-        listPlanets.filter((planet) => parseInt(planet[columnFilter], 10) < valueFilter),
-      );
-    case 'igual a':
-      return setListPlanets(
-        listPlanets.filter((planet) => planet[columnFilter] === valueFilter),
-      );
-    default:
-      break;
-    }
+    setColumnFilter(numberFilter.filter((filter) => filter !== columnFilter)[0]);
+    setUsedFilter([...usedFilter, `${columnFilter}-${comparisonFilter}-${valueFilter}`]);
+    setListPlanets(filterList(listPlanets, comparisonFilter, columnFilter, valueFilter));
+  }
+
+  function handleRemoveFilter(removeFilter) {
+    const updateListUsedFilter = usedFilter.filter((filter) => filter !== removeFilter);
+    setUsedFilter(updateListUsedFilter);
+    setNumberFilter([...numberFilter, removeFilter.split('-')[0]]);
+    let updateListPlanet = allPlanets;
+
+    updateListUsedFilter.forEach((filter) => {
+      const filters = filter.split('-');
+      updateListPlanet = filterList(updateListPlanet, filters[1], filters[0], filters[2]);
+      console.log(updateListPlanet);
+    });
+
+    setListPlanets(updateListPlanet);
   }
 
   return (
@@ -115,6 +133,26 @@ function Search() {
           FILTRAR
         </button>
       </form>
+      <button
+        data-testid="button-remove-filters"
+        onClick={ () => {
+          setListPlanets(allPlanets);
+          setNumberFilter(allNumberFilter);
+          setUsedFilter([]);
+        } }
+      >
+        Remover filtros
+      </button>
+      { usedFilter.map((filter) => (
+        <p key={ filter } data-testid="filter">
+          { filter }
+          <button
+            onClick={ () => handleRemoveFilter(filter) }
+          >
+            Remover
+          </button>
+        </p>
+      ))}
     </header>
   );
 }
