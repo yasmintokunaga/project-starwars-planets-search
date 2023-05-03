@@ -6,7 +6,13 @@ function Search() {
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [valueFilter, setValueFilter] = useState(0);
   const planets = useContext(PlanetContext);
-  const { allPlanets, listPlanets, setListPlanets } = planets;
+  const {
+    allPlanets,
+    listPlanets,
+    setListPlanets,
+    numberFilter,
+    setNumberFilter,
+  } = planets;
 
   function handleChange({ target }) {
     const { value } = target;
@@ -37,6 +43,7 @@ function Search() {
 
   function handleClick(event) {
     event.preventDefault();
+    setNumberFilter(numberFilter.filter((filter) => filter !== columnFilter));
     switch (comparisonFilter) {
     case 'maior que':
       return setListPlanets(
@@ -72,11 +79,14 @@ function Search() {
           data-testid="column-filter"
           onChange={ handleForm }
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          { numberFilter.map((filter) => (
+            <option
+              value={ filter }
+              key={ filter }
+            >
+              { filter }
+            </option>
+          ))}
         </select>
 
         <select

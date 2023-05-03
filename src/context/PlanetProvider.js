@@ -6,6 +6,9 @@ export default function PlanetProvider({ children }) {
   const [listPlanets, setListPlanets] = useState([]);
   const [allPlanets, setAllPlanets] = useState([]);
   const [headerTable, setHeaderTable] = useState([]);
+  const [numberFilter, setNumberFilter] = useState([
+    'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
+  ]);
 
   useEffect(() => {
     async function fetchPlanets() {
@@ -24,8 +27,10 @@ export default function PlanetProvider({ children }) {
     listPlanets,
     allPlanets,
     headerTable,
+    numberFilter,
     setListPlanets,
-  }), [listPlanets, allPlanets, headerTable]);
+    setNumberFilter,
+  }), [listPlanets, allPlanets, headerTable, numberFilter]);
 
   return (
     <PlanetContext.Provider value={ values }>
