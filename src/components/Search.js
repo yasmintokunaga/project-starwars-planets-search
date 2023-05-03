@@ -1,7 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PlanetContext from '../context/PlanetContext';
 
 function Search() {
+  const [columnFilter, setColumnFilter] = useState('population');
+  const [comparisonFilter, setComparisonFilter] = useState('maior que');
+  const [valueFilter, setValueFilter] = useState(0);
   const planets = useContext(PlanetContext);
   const { allPlanets, setListPlanets } = planets;
 
@@ -18,6 +21,40 @@ function Search() {
     }
   }
 
+  function handleForm({ target }) {
+    const { value, name } = target;
+    switch (name) {
+    case 'columnFilter':
+      return setColumnFilter(value);
+    case 'comparisonFilter':
+      return setComparisonFilter(value);
+    case 'valueFilter':
+      return setValueFilter(value);
+    default:
+      break;
+    }
+  }
+
+  function handleClick(event) {
+    event.preventDefault();
+    switch (comparisonFilter) {
+    case 'maior que':
+      return setListPlanets(
+        allPlanets.filter((planet) => parseInt(planet[columnFilter], 10) > valueFilter),
+      );
+    case 'menor que':
+      return setListPlanets(
+        allPlanets.filter((planet) => parseInt(planet[columnFilter], 10) < valueFilter),
+      );
+    case 'igual a':
+      return setListPlanets(
+        allPlanets.filter((planet) => planet[columnFilter] === valueFilter),
+      );
+    default:
+      break;
+    }
+  }
+
   return (
     <header>
       <label htmlFor="name-filter">Pesquisar planeta</label>
@@ -28,6 +65,46 @@ function Search() {
         data-testid="name-filter"
         onChange={ handleChange }
       />
+
+      <form>
+        <select
+          name="columnFilter"
+          data-testid="column-filter"
+          onChange={ handleForm }
+        >
+          <option value="population">population</option>
+          <option value="orbital_period">orbital_period</option>
+          <option value="diameter">diameter</option>
+          <option value="rotation_period">rotation_period</option>
+          <option value="surface_water">surface_water</option>
+        </select>
+
+        <select
+          name="comparisonFilter"
+          data-testid="comparison-filter"
+          onChange={ handleForm }
+        >
+          <option value="maior que">maior que</option>
+          <option value="menor que">menor que</option>
+          <option value="igual a">igual a</option>
+        </select>
+
+        <input
+          type="number"
+          id="value-filter"
+          name="valueFilter"
+          data-testid="value-filter"
+          onChange={ handleForm }
+          value={ valueFilter }
+        />
+
+        <button
+          data-testid="button-filter"
+          onClick={ handleClick }
+        >
+          FILTRAR
+        </button>
+      </form>
     </header>
   );
 }
