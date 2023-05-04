@@ -5,6 +5,10 @@ function Search() {
   const [columnFilter, setColumnFilter] = useState('population');
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [valueFilter, setValueFilter] = useState(0);
+
+  const [columnSort, setColumnSort] = useState('population');
+  const [columnSortInput, setColumnSortInput] = useState('ASC');
+
   const planets = useContext(PlanetContext);
   const {
     allPlanets,
@@ -39,6 +43,10 @@ function Search() {
       return setComparisonFilter(value);
     case 'valueFilter':
       return setValueFilter(value);
+    case 'columnSort':
+      return setColumnSort(value);
+    case 'columnSortInput':
+      return setColumnSortInput(value);
     default:
       break;
     }
@@ -78,6 +86,21 @@ function Search() {
     });
 
     setListPlanets(updateListPlanet);
+  }
+
+  function sortList(list, column, order) {
+    const numberItens = list.filter((planet) => planet[column] !== 'unknown');
+    const unknownItens = list.filter((planet) => planet[column] === 'unknown');
+    if (order === 'ASC') {
+      return [...numberItens.sort((a, b) => a[column] - b[column]), ...unknownItens];
+    }
+    return [...numberItens.sort((a, b) => b[column] - a[column]), ...unknownItens];
+  }
+
+  function handleSort(event) {
+    event.preventDefault();
+    const updateList = sortList(listPlanets, columnSort, columnSortInput);
+    setListPlanets([...updateList]);
   }
 
   return (
@@ -153,6 +176,49 @@ function Search() {
           </button>
         </p>
       ))}
+
+      <form>
+        <select
+          name="columnSort"
+          data-testid="column-sort"
+          onChange={ handleForm }
+        >
+          { allNumberFilter.map((filter) => (
+            <option
+              value={ filter }
+              key={ filter }
+            >
+              { filter }
+            </option>
+          ))}
+        </select>
+
+        <input
+          data-testid="column-sort-input-asc"
+          type="radio"
+          name="columnSortInput"
+          id="column-sort-input-asc"
+          value="ASC"
+          onChange={ handleForm }
+        />
+        <label htmlFor="column-sort-input-asc">Ascendente</label>
+        <input
+          data-testid="column-sort-input-desc"
+          type="radio"
+          name="columnSortInput"
+          id="column-sort-input-desc"
+          value="DESC"
+          onChange={ handleForm }
+        />
+        <label htmlFor="column-sort-input-desc">Descendente</label>
+
+        <button
+          data-testid="column-sort-button"
+          onClick={ handleSort }
+        >
+          ORDENAR
+        </button>
+      </form>
     </header>
   );
 }

@@ -18,7 +18,12 @@ function Table() {
         { listPlanets.map((planet) => (
           <tr key={ planet.name }>
             { headerTable.map((titleHeader) => (
-              <td key={ planet[titleHeader] }>{ planet[titleHeader] }</td>
+              <td
+                key={ planet[titleHeader] }
+                data-testid={ titleHeader === 'name' ? 'planet-name' : '' }
+              >
+                { planet[titleHeader] }
+              </td>
             ))}
           </tr>
         ))}
