@@ -2,6 +2,7 @@
 Este projeto foi desenvolvido durante o curso de Desenvolvimento Web na Trybe em Maio de 2023.
 
 # Conhecimentos técnicos utilizados:
+
 *HTML
 *CSS
 *JavaScript (realização de requisições e consumo de dados de uma API)
